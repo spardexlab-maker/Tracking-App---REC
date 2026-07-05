@@ -739,4 +739,90 @@
   .colorTurquoiseSea {
     color: #00858a !important;
   }
+
+  /* Cinematic Obsidian Design System Overrides */
+  
+  #app {
+    background: transparent !important;
+  }
+
+  // Force transparent project background wrapper to show Three.js animation
+  .wrapper[class*="background"] {
+    background: transparent !important;
+  }
+
+  // Frosted Obsidian Glass Lists
+  .outerWrapper {
+    background: rgba(15, 23, 42, 0.45) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    box-shadow: none !important;
+    padding: 8px 4px !important;
+  }
+
+  // Denser Glass Cards
+  .wrapper {
+    &.cardWrapper, &:not(.cardsOuterWrapper):not(.cardsInnerWrapper):not(.addCardButtonWrapper) {
+      // Apply to card wrappers
+      background: rgba(30, 41, 59, 0.5) !important;
+      border: 1px solid rgba(255, 255, 255, 0.05) !important;
+      border-radius: 10px !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+      color: #e0e2ef !important;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+      &:hover {
+        background: rgba(30, 41, 59, 0.65) !important;
+        border-color: rgba(139, 92, 246, 0.4) !important; // glowing violet border
+        box-shadow: 0 0 15px rgba(139, 92, 246, 0.15) !important; // purple aura glow
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  // Make list and card text light
+  .headerName, .content, .name, .title, .addCardButtonText {
+    color: #e0e2ef !important;
+  }
+
+  // Retheme buttons (Azure to Purple gradient)
+  .ui.primary.button, button.primary {
+    background: linear-gradient(135deg, #00a2ff 0%, #8b5cf6 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    transition: all 0.25s ease !important;
+
+    &:hover {
+      box-shadow: 0 0 12px rgba(0, 162, 255, 0.4) !important;
+      transform: scale(1.01);
+    }
+  }
+
+  // Frosted Glass Header
+  .ui.menu, .header, header {
+    background: rgba(15, 23, 42, 0.6) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #e0e2ef !important;
+  }
+
+  // Frosted Glass Modals
+  .ui.modal {
+    background: rgba(15, 23, 42, 0.85) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    color: #e0e2ef !important;
+
+    .header, .content, .actions {
+      background: transparent !important;
+      color: #e0e2ef !important;
+      border: none !important;
+    }
+  }
 }

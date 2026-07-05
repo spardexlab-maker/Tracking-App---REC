@@ -51,6 +51,7 @@ export const BoardViews = {
   KANBAN: 'kanban',
   GRID: 'grid',
   LIST: 'list',
+  CALENDAR: 'calendar',
 };
 
 export const BoardContexts = {
@@ -62,6 +63,8 @@ export const BoardContexts = {
 export const BoardMembershipRoles = {
   EDITOR: 'editor',
   VIEWER: 'viewer',
+  WORKER: 'worker',
+  GUEST: 'guest',
 };
 
 export const ListTypes = {

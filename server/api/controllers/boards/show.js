@@ -202,6 +202,11 @@ module.exports = {
 
     board.isSubscribed = await sails.helpers.users.isBoardSubscriber(currentUser.id, board.id);
 
+    const userBoardMembership = await BoardMembership.qm.getOneByBoardIdAndUserId(
+      board.id,
+      currentUser.id,
+    );
+
     const boardMemberships = await BoardMembership.qm.getByBoardId(board.id);
     const labels = await Label.qm.getByBoardId(board.id);
     const lists = await List.qm.getByBoardId(board.id);
@@ -209,7 +214,12 @@ module.exports = {
     const finiteLists = lists.filter((list) => sails.helpers.lists.isFinite(list));
     const finiteListIds = sails.helpers.utils.mapRecords(finiteLists);
 
-    const cards = await Card.qm.getByListIds(finiteListIds);
+    let cards = await Card.qm.getByListIds(finiteListIds);
+    if (userBoardMembership && userBoardMembership.role === BoardMembership.Roles.GUEST) {
+      const myCardMemberships = await CardMembership.find({ userId: currentUser.id });
+      const myCardIds = myCardMemberships.map((cm) => cm.cardId);
+      cards = cards.filter((card) => myCardIds.includes(card.id));
+    }
     const cardIds = sails.helpers.utils.mapRecords(cards);
 
     const userIds = _.union(

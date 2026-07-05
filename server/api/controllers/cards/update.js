@@ -244,7 +244,7 @@ module.exports = {
     }
 
     const availableInputKeys = ['id', 'isSubscribed'];
-    if (boardMembership.role === BoardMembership.Roles.EDITOR) {
+    if (boardMembership.role === BoardMembership.Roles.EDITOR || boardMembership.role === BoardMembership.Roles.WORKER) {
       availableInputKeys.push(
         'boardId',
         'listId',
@@ -257,6 +257,18 @@ module.exports = {
         'isDueCompleted',
         'stopwatch',
       );
+    } else if (boardMembership.role === BoardMembership.Roles.GUEST) {
+      const isCardMember = await CardMembership.findOne({ cardId: card.id, userId: currentUser.id });
+      if (isCardMember) {
+        availableInputKeys.push(
+          'coverAttachmentId',
+          'name',
+          'description',
+          'dueDate',
+          'isDueCompleted',
+          'stopwatch',
+        );
+      }
     }
 
     if (_.difference(Object.keys(inputs), availableInputKeys).length > 0) {

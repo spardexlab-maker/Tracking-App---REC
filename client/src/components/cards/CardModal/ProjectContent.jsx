@@ -89,10 +89,24 @@ const ProjectContent = React.memo(() => {
 
     let isMember = false;
     let isEditor = false;
+    let canMoveOrDelete = false;
 
     if (boardMembership) {
       isMember = true;
-      isEditor = boardMembership.role === BoardMembershipRoles.EDITOR;
+      const isRoleEditor = boardMembership.role === BoardMembershipRoles.EDITOR;
+      const isRoleWorker = boardMembership.role === BoardMembershipRoles.WORKER;
+      const isRoleGuest = boardMembership.role === BoardMembershipRoles.GUEST;
+
+      if (isRoleEditor || isRoleWorker) {
+        isEditor = true;
+        canMoveOrDelete = isRoleEditor;
+      } else if (isRoleGuest) {
+        const userIds = selectors.selectUserIdsByCardId(state, card.id) || [];
+        const currentUserId = selectors.selectCurrentUserId(state);
+        const isCardMember = userIds.includes(currentUserId);
+        isEditor = isCardMember;
+        canMoveOrDelete = false;
+      }
     }
 
     if (isInArchiveList || isInTrashList) {
@@ -105,11 +119,11 @@ const ProjectContent = React.memo(() => {
         canSubscribe: isMember,
         canJoin: false,
         canDuplicate: false,
-        canMove: isEditor,
-        canRestore: isEditor,
-        canArchive: isEditor,
-        canDelete: isEditor,
-        canUseLists: isEditor,
+        canMove: canMoveOrDelete,
+        canRestore: canMoveOrDelete,
+        canArchive: canMoveOrDelete,
+        canDelete: canMoveOrDelete,
+        canUseLists: canMoveOrDelete,
         canUseMembers: false,
         canUseLabels: false,
         canAddTaskList: false,
@@ -119,24 +133,24 @@ const ProjectContent = React.memo(() => {
     }
 
     return {
-      canEditType: isEditor,
+      canEditType: canMoveOrDelete,
       canEditName: isEditor,
       canEditDescription: isEditor,
       canEditDueDate: isEditor,
       canEditStopwatch: isEditor,
       canSubscribe: isMember,
-      canJoin: isEditor,
-      canDuplicate: isEditor,
-      canMove: isEditor,
+      canJoin: canMoveOrDelete,
+      canDuplicate: canMoveOrDelete,
+      canMove: canMoveOrDelete,
       canRestore: null,
-      canArchive: isEditor,
-      canDelete: isEditor,
-      canUseLists: isEditor,
-      canUseMembers: isEditor,
+      canArchive: canMoveOrDelete,
+      canDelete: canMoveOrDelete,
+      canUseLists: canMoveOrDelete,
+      canUseMembers: canMoveOrDelete,
       canUseLabels: isEditor,
       canAddTaskList: isEditor,
       canAddAttachment: isEditor,
-      canAddCustomFieldGroup: isEditor,
+      canAddCustomFieldGroup: canMoveOrDelete,
     };
   }, shallowEqual);
 

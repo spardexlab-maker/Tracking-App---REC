@@ -1,0 +1,169 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 198px);
+  padding: 0 20px 20px 20px;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navButton {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #e0e2ef !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 6px !important;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
+.todayButton {
+  background: rgba(139, 92, 246, 0.2) !important;
+  color: #e0e2ef !important;
+  border: 1px solid rgba(139, 92, 246, 0.4) !important;
+  border-radius: 6px !important;
+
+  &:hover {
+    background: rgba(139, 92, 246, 0.3) !important;
+  }
+}
+
+.monthLabel {
+  color: #e0e2ef !important;
+  margin: 0 !important;
+  font-weight: 600 !important;
+}
+
+.weekdaysGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 8px;
+  background: rgba(15, 23, 42, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 8px 0;
+}
+
+.weekdayLabel {
+  color: #bec7d4;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.daysGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 6px;
+  flex: 1;
+  min-height: 0;
+}
+
+.dayCell {
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(15, 23, 42, 0.55);
+  }
+}
+
+.paddedDay {
+  opacity: 0.35;
+}
+
+.todayDay {
+  background: rgba(139, 92, 246, 0.1) !important;
+  border-color: rgba(139, 92, 246, 0.5) !important;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.15);
+  
+  .dayNumber {
+    background: #8b5cf6;
+    color: #ffffff;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.dayNumber {
+  color: #e0e2ef;
+  font-weight: 500;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.cardContainer {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-right: 2px;
+  
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+  }
+}
+
+.cardLink {
+  text-decoration: none;
+}
+
+.cardBadge {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  color: #e0e2ef;
+  padding: 4px 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(139, 92, 246, 0.4);
+    transform: translateY(-1px);
+  }
+}
+
+.completedCard {
+  text-decoration: line-through;
+  opacity: 0.6;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+}

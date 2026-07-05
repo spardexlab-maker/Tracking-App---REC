@@ -201,12 +201,12 @@ const Content = React.memo(() => {
           <div className={styles.login}>
             <div className={styles.form}>
               <div className={styles.logoWrapper}>
-                <img src={logo} alt="" className={styles.logo} />
+                <img src={bootstrap.customLogoUrl || logo} alt="" className={styles.logo} />
               </div>
               <Header
                 as="h1"
                 textAlign="center"
-                content={bootstrap.instanceName || 'PLANKA'}
+                content={bootstrap.customAppName || bootstrap.instanceName || 'PLANKA'}
                 className={styles.formTitle}
               />
               <Header

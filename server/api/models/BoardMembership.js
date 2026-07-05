@@ -69,6 +69,8 @@
 const Roles = {
   EDITOR: 'editor',
   VIEWER: 'viewer',
+  WORKER: 'worker',
+  GUEST: 'guest',
 };
 
 const SHARED_RULES = {
@@ -82,6 +84,12 @@ const RULES_BY_ROLE = {
   },
   [Roles.VIEWER]: {
     canComment: { defaultTo: false },
+  },
+  [Roles.WORKER]: {
+    canComment: { setTo: true },
+  },
+  [Roles.GUEST]: {
+    canComment: { setTo: true },
   },
 };
 

@@ -24,6 +24,8 @@ module.exports = {
       oidc: inputs.oidc,
       termsLanguages: sails.hooks.terms.getLanguages(),
       version: sails.config.custom.version,
+      customAppName: process.env.CUSTOM_APP_NAME || null,
+      customLogoUrl: process.env.CUSTOM_LOGO_URL || null,
     };
 
     if (inputs.user && inputs.user.role === User.Roles.ADMIN) {

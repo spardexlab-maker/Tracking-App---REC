@@ -37,6 +37,9 @@ const Core = React.memo(() => {
 
   const [t] = useTranslation();
 
+  const bootstrap = useSelector(selectors.selectBootstrap);
+  const customAppName = bootstrap ? bootstrap.customAppName : null;
+
   const defaultTitleRef = useRef(document.title);
 
   const handleRefreshPageClick = useCallback(() => {
@@ -45,6 +48,7 @@ const Core = React.memo(() => {
 
   useEffect(() => {
     const titleParts = [];
+    const appName = customAppName || defaultTitleRef.current;
     if (project) {
       if (board) {
         titleParts.push(board.name);
@@ -52,9 +56,10 @@ const Core = React.memo(() => {
 
       titleParts.push(project.name);
     }
+    titleParts.push(appName);
 
-    document.title = titleParts.length === 0 ? defaultTitleRef.current : titleParts.join(' | ');
-  }, [project, board]);
+    document.title = titleParts.join(' | ');
+  }, [project, board, customAppName]);
 
   let modalNode = null;
   if (modal) {

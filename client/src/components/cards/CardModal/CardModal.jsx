@@ -41,7 +41,21 @@ const CardModal = React.memo(() => {
     }
 
     const boardMembership = selectors.selectCurrentUserMembershipForCurrentBoard(state);
-    return !!boardMembership && boardMembership.role === BoardMembershipRoles.EDITOR;
+    if (!boardMembership) {
+      return false;
+    }
+
+    if (boardMembership.role === BoardMembershipRoles.EDITOR || boardMembership.role === BoardMembershipRoles.WORKER) {
+      return true;
+    }
+
+    if (boardMembership.role === BoardMembershipRoles.GUEST) {
+      const userIds = selectors.selectUserIdsByCardId(state, card.id) || [];
+      const currentUserId = selectors.selectCurrentUserId(state);
+      return userIds.includes(currentUserId);
+    }
+
+    return false;
   });
 
   const dispatch = useDispatch();

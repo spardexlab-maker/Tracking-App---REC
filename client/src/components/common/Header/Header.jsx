@@ -3,7 +3,7 @@
  * Licensed under the Fair Use License: https://github.com/plankanban/planka/blob/master/LICENSE.md
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import classNames from 'classnames';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';
@@ -17,6 +17,7 @@ import { BoardMembershipRoles, BoardViews, UserRoles } from '../../../constants/
 import UserAvatar from '../../users/UserAvatar';
 import UserActionsStep from '../../users/UserActionsStep';
 import NotificationsStep from '../../notifications/NotificationsStep';
+import SearchModal from '../SearchModal';
 
 import styles from './Header.module.scss';
 
@@ -25,6 +26,7 @@ const POPUP_PROPS = {
 };
 
 const Header = React.memo(() => {
+  const [isSearchOpened, setIsSearchOpened] = useState(false);
   const user = useSelector(selectors.selectCurrentUser);
   const project = useSelector(selectors.selectCurrentProject);
   const board = useSelector(selectors.selectCurrentBoard);
@@ -71,6 +73,10 @@ const Header = React.memo(() => {
     };
   }, shallowEqual);
 
+  const bootstrap = useSelector(selectors.selectBootstrap);
+  const customAppName = bootstrap ? bootstrap.customAppName : null;
+  const customLogoUrl = bootstrap ? bootstrap.customLogoUrl : null;
+
   const dispatch = useDispatch();
 
   const handleToggleFavoritesClick = useCallback(() => {
@@ -95,8 +101,9 @@ const Header = React.memo(() => {
   return (
     <div className={styles.wrapper}>
       {!project && (
-        <Link to={Paths.ROOT} className={classNames(styles.logo, styles.title)}>
-          PLANKA
+        <Link to={Paths.ROOT} className={classNames(styles.logo, styles.title)} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {customLogoUrl && <img src={customLogoUrl} alt={customAppName || 'PLANKA'} style={{ height: '24px', width: 'auto' }} />}
+          {customAppName || 'PLANKA'}
         </Link>
       )}
       <Menu inverted size="large" className={styles.menu}>
@@ -120,6 +127,12 @@ const Header = React.memo(() => {
           </Menu.Menu>
         )}
         <Menu.Menu position="right">
+          <Menu.Item
+            className={classNames(styles.item, styles.itemHoverable)}
+            onClick={() => setIsSearchOpened(true)}
+          >
+            <Icon fitted name="search" />
+          </Menu.Item>
           {withFavoritesToggler && (
             <Menu.Item
               className={classNames(styles.item, styles.itemHoverable)}
@@ -160,6 +173,7 @@ const Header = React.memo(() => {
           </UserActionsPopup>
         </Menu.Menu>
       </Menu>
+      <SearchModal open={isSearchOpened} onClose={() => setIsSearchOpened(false)} />
     </div>
   );
 });

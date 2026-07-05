@@ -135,6 +135,7 @@ module.exports.routes = {
   'DELETE /api/users/:id': 'users/delete',
 
   'GET /api/projects': 'projects/index',
+  'GET /api/global-search': 'projects/global-search',
   'POST /api/projects': 'projects/create',
   'GET /api/projects/:id': 'projects/show',
   'PATCH /api/projects/:id': 'projects/update',

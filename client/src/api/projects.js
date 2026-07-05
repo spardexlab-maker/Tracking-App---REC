@@ -9,6 +9,8 @@ import socket from './socket';
 
 const getProjects = (headers) => socket.get('/projects', undefined, headers);
 
+const globalSearch = (q, headers) => socket.get('/global-search', { q }, headers);
+
 const createProject = (data, headers) => socket.post('/projects', data, headers);
 
 const getProject = (id, headers) => socket.get(`/projects/${id}`, undefined, headers);
@@ -19,6 +21,7 @@ const deleteProject = (id, headers) => socket.delete(`/projects/${id}`, undefine
 
 export default {
   getProjects,
+  globalSearch,
   createProject,
   getProject,
   updateProject,
