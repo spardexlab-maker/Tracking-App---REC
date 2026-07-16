@@ -1,0 +1,51 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/index.js"
+    },
+    {
+      "src": "/socket.io/(.*)",
+      "dest": "api/index.js"
+    },
+    {
+      "src": "/attachments/(.*)",
+      "dest": "api/index.js"
+    },
+    {
+      "src": "/user-avatars/(.*)",
+      "dest": "api/index.js"
+    },
+    {
+      "src": "/background-images/(.*)",
+      "dest": "api/index.js"
+    },
+    {
+      "src": "/favicons/(.*)",
+      "dest": "api/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "client/$1"
+    }
+  ],
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "server/**"
+    }
+  }
+}
