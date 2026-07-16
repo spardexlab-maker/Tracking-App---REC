@@ -150,7 +150,13 @@ module.exports = {
       throw Errors.NOT_ENOUGH_RIGHTS;
     }
 
-    if (boardMembership.role !== BoardMembership.Roles.EDITOR) {
+    const allowedRoles = [
+      BoardMembership.Roles.EDITOR,
+      BoardMembership.Roles.WORKER,
+      BoardMembership.Roles.GUEST,
+    ];
+
+    if (!allowedRoles.includes(boardMembership.role)) {
       throw Errors.NOT_ENOUGH_RIGHTS;
     }
 

@@ -54,11 +54,15 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
+    port: 3005,
     open: true,
     proxy: {
       '/api': PROXY_TARGET,
       '/socket.io': { target: PROXY_TARGET, ws: true },
+      '/attachments': PROXY_TARGET,
+      '/user-avatars': PROXY_TARGET,
+      '/background-images': PROXY_TARGET,
+      '/favicons': PROXY_TARGET,
     },
   },
   build: {

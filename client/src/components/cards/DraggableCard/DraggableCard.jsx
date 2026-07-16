@@ -22,7 +22,15 @@ const DraggableCard = React.memo(({ id, index, className, ...props }) => {
 
   const canDrag = useSelector((state) => {
     const boardMembership = selectors.selectCurrentUserMembershipForCurrentBoard(state);
-    return !!boardMembership && boardMembership.role === BoardMembershipRoles.EDITOR;
+    if (!boardMembership) {
+      return false;
+    }
+    const role = boardMembership.role;
+    return (
+      role === BoardMembershipRoles.EDITOR ||
+      role === BoardMembershipRoles.WORKER ||
+      role === BoardMembershipRoles.GUEST
+    );
   });
 
   return (

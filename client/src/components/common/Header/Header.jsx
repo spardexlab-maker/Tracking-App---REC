@@ -18,6 +18,7 @@ import UserAvatar from '../../users/UserAvatar';
 import UserActionsStep from '../../users/UserActionsStep';
 import NotificationsStep from '../../notifications/NotificationsStep';
 import SearchModal from '../SearchModal';
+import BackgroundSettingsModal from '../BackgroundSettingsModal';
 
 import styles from './Header.module.scss';
 
@@ -27,6 +28,7 @@ const POPUP_PROPS = {
 
 const Header = React.memo(() => {
   const [isSearchOpened, setIsSearchOpened] = useState(false);
+  const [isBackgroundSettingsOpened, setIsBackgroundSettingsOpened] = useState(false);
   const user = useSelector(selectors.selectCurrentUser);
   const project = useSelector(selectors.selectCurrentProject);
   const board = useSelector(selectors.selectCurrentBoard);
@@ -86,6 +88,10 @@ const Header = React.memo(() => {
   const handleToggleEditModeClick = useCallback(() => {
     dispatch(entryActions.toggleEditMode(!isEditModeEnabled));
   }, [isEditModeEnabled, dispatch]);
+
+  const handleBackgroundSettingsOpen = useCallback(() => {
+    setIsBackgroundSettingsOpened(true);
+  }, []);
 
   const handleProjectSettingsClick = useCallback(() => {
     if (!canEditProject) {
@@ -157,15 +163,8 @@ const Header = React.memo(() => {
               />
             </Menu.Item>
           )}
-          <NotificationsPopup>
-            <Menu.Item className={classNames(styles.item, styles.itemHoverable)}>
-              <Icon fitted name="bell" />
-              {notificationIds.length > 0 && (
-                <span className={styles.notification}>{notificationIds.length}</span>
-              )}
-            </Menu.Item>
-          </NotificationsPopup>
-          <UserActionsPopup>
+
+          <UserActionsPopup onBackgroundSettingsOpen={handleBackgroundSettingsOpen}>
             <Menu.Item className={classNames(styles.item, styles.itemHoverable)}>
               <span className={styles.userName}>{user.name}</span>
               <UserAvatar id={user.id} size="small" />
@@ -174,6 +173,7 @@ const Header = React.memo(() => {
         </Menu.Menu>
       </Menu>
       <SearchModal open={isSearchOpened} onClose={() => setIsSearchOpened(false)} />
+      <BackgroundSettingsModal open={isBackgroundSettingsOpened} onClose={() => setIsBackgroundSettingsOpened(false)} />
     </div>
   );
 });

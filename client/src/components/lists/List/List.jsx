@@ -60,13 +60,16 @@ const List = React.memo(({ id, index }) => {
 
       const boardMembership = selectors.selectCurrentUserMembershipForCurrentBoard(state);
       const isEditor = !!boardMembership && boardMembership.role === BoardMembershipRoles.EDITOR;
+      const isWorker = !!boardMembership && boardMembership.role === BoardMembershipRoles.WORKER;
+      const isGuest = !!boardMembership && boardMembership.role === BoardMembershipRoles.GUEST;
+      const isEditorOrWorkerOrGuest = isEditor || isWorker || isGuest;
 
       return {
-        canEdit: isEditModeEnabled && isEditor,
+        canEdit: isEditorOrWorkerOrGuest,
         canArchiveCards: list.type === ListTypes.CLOSED && isEditor,
-        canAddCard: isEditor,
-        canPasteCard: isEditor,
-        canDropCard: isEditor,
+        canAddCard: isEditorOrWorkerOrGuest,
+        canPasteCard: isEditorOrWorkerOrGuest,
+        canDropCard: isEditorOrWorkerOrGuest,
       };
     },
     shallowEqual,

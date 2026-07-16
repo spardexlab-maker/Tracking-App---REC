@@ -31,18 +31,6 @@ const UserSettingsModal = React.memo(() => {
       }),
       render: () => <AccountPane />,
     },
-    {
-      menuItem: t('common.preferences', {
-        context: 'title',
-      }),
-      render: () => <PreferencesPane />,
-    },
-    {
-      menuItem: t('common.notifications', {
-        context: 'title',
-      }),
-      render: () => <NotificationsPane />,
-    },
   ];
 
   return (

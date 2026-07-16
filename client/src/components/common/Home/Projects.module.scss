@@ -57,42 +57,40 @@
 
   .card {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1), 0 6px 12px rgba(0, 0, 0, 0.1);
-    height: 150px;
-    transition: box-shadow 0.2s ease;
+    height: 140px;
+    border-radius: 12px !important;
+    background: rgba(30, 41, 59, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 
     &:hover {
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1), 0 32px 64px rgba(0, 0, 0, 0.1);
+      background: rgba(30, 41, 59, 0.65) !important;
+      border-color: rgba(139, 92, 246, 0.4) !important;
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.15) !important;
+      transform: translateY(-2px);
+    }
+  }
+
+  .wrapper {
+    :global(.ui.grid) {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+      gap: 20px !important;
+      margin: 0 !important;
+      width: 100% !important;
+
+      &::before, &::after {
+        display: none !important;
+      }
     }
   }
 
   .column {
-    @media only screen and (width < 840px) {
-      width: 50% !important;
-    }
-
-    @media only screen and (840px <= width < 1120px) {
-      width: 33.3333333333% !important;
-    }
-
-    @media only screen and (1120px <= width < 1400px) {
-      width: 25% !important;
-    }
-
-    @media only screen and (1400px <= width < 1680px) {
-      width: 20% !important;
-    }
-
-    @media only screen and (1680px <= width < 1960px) {
-      width: 16.6666666667% !important;
-    }
-
-    @media only screen and (1960px <= width < 2240px) {
-      width: 14.2857142857% !important;
-    }
-
-    @media only screen and (width >= 2240px) {
-      width: 12.5% !important;
-    }
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    float: none !important;
   }
 
   .title {

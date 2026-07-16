@@ -310,6 +310,23 @@ export const selectIsCurrentUserManagerForCurrentProject = createSelector(
   },
 );
 
+export const makeSelectIsCurrentUserManager = () =>
+  createSelector(
+    orm,
+    (state, id) => id,
+    (state) => selectCurrentUserId(state),
+    ({ Project }, id, currentUserId) => {
+      if (!id) {
+        return false;
+      }
+      const projectModel = Project.withId(id);
+      if (!projectModel) {
+        return false;
+      }
+      return projectModel.hasManagerWithUserId(currentUserId);
+    },
+  );
+
 export default {
   makeSelectProjectById,
   selectProjectById,
@@ -331,4 +348,5 @@ export default {
   selectBaseCustomFieldGroupsForCurrentProject,
   selectBoardIdsForCurrentProject,
   selectIsCurrentUserManagerForCurrentProject,
+  makeSelectIsCurrentUserManager,
 };

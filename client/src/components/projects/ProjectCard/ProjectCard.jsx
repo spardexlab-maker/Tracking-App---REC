@@ -9,13 +9,13 @@ import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Button, Icon } from 'semantic-ui-react';
 
 import selectors from '../../../selectors';
 import entryActions from '../../../entry-actions';
 import Paths from '../../../constants/Paths';
-import { ProjectBackgroundTypes } from '../../../constants/Enums';
+import { ProjectBackgroundTypes, UserRoles } from '../../../constants/Enums';
 import UserAvatar from '../../users/UserAvatar';
 
 import styles from './ProjectCard.module.scss';
@@ -71,6 +71,19 @@ const ProjectCard = React.memo(
     });
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const selectIsCurrentUserManager = useMemo(() => selectors.makeSelectIsCurrentUserManager(), []);
+    const canEdit = useSelector((state) => {
+      const user = selectors.selectCurrentUser(state);
+      if (!user) {
+        return false;
+      }
+      if (user.role === UserRoles.ADMIN) {
+        return true;
+      }
+      return selectIsCurrentUserManager(state, id);
+    });
 
     const handleToggleFavoriteClick = useCallback(() => {
       dispatch(
@@ -79,6 +92,17 @@ const ProjectCard = React.memo(
         }),
       );
     }, [project, dispatch]);
+
+    const handleEditClick = useCallback(
+      (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        navigate(Paths.PROJECTS.replace(':id', id));
+        dispatch(entryActions.openProjectSettingsModal());
+      },
+      [id, navigate, dispatch],
+    );
 
     const withSidebar = withTypeIndicator || (withFavoriteButton && !project.isHidden);
 
@@ -158,6 +182,21 @@ const ProjectCard = React.memo(
             <Icon
               fitted
               name={project.isFavorite ? 'star' : 'star outline'}
+              className={classNames(styles.icon, styles.favoriteButtonIcon)}
+            />
+          </Button>
+        )}
+        {canEdit && !project.isHidden && (
+          <Button
+            className={classNames(
+              styles.editProjectButton,
+              styles.favoriteButtonAppearable,
+            )}
+            onClick={handleEditClick}
+          >
+            <Icon
+              fitted
+              name="pencil"
               className={classNames(styles.icon, styles.favoriteButtonIcon)}
             />
           </Button>

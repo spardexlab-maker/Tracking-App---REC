@@ -295,16 +295,7 @@ const Content = React.memo(() => {
                 </>
               )}
             </div>
-            <div className={styles.poweredBy}>
-              <p className={styles.poweredByText}>
-                <Trans i18nKey="common.poweredByPlanka">
-                  {'Powered by '}
-                  <a href="https://github.com/plankanban/planka" target="_blank" rel="noreferrer">
-                    PLANKA
-                  </a>
-                </Trans>
-              </p>
-            </div>
+
           </div>
         </Grid.Column>
         <Grid.Column

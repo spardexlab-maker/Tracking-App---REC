@@ -1,0 +1,93 @@
+.modal {
+  :global(.header) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+}
+
+.modalHeader {
+  color: #e0e2ef !important;
+}
+
+.modalContent {
+  padding: 24px !important;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  margin-bottom: 8px !important;
+}
+
+.radio {
+  :global(label) {
+    color: #e0e2ef !important;
+    font-size: 15px !important;
+    cursor: pointer;
+  }
+}
+
+.uploadSection {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.uploadBtn {
+  background: rgba(139, 92, 246, 0.2) !important;
+  color: #e0e2ef !important;
+  border: 1px solid rgba(139, 92, 246, 0.4) !important;
+  border-radius: 6px !important;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(139, 92, 246, 0.3) !important;
+  }
+}
+
+.previewContainer {
+  margin-top: 16px;
+  max-height: 150px;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.previewImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.modalActions {
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: 16px 24px !important;
+}
+
+.cancelBtn {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #e0e2ef !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 6px !important;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
+.saveBtn {
+  background: linear-gradient(135deg, #00a2ff 0%, #8b5cf6 100%) !important;
+  color: #ffffff !important;
+  border-radius: 6px !important;
+  padding: 12px 24px !important;
+
+  &:hover {
+    box-shadow: 0 0 12px rgba(0, 162, 255, 0.4) !important;
+  }
+}

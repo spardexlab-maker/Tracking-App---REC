@@ -178,7 +178,13 @@ module.exports = {
       throw Errors.CARD_NOT_FOUND; // Forbidden
     }
 
-    if (boardMembership.role !== BoardMembership.Roles.EDITOR) {
+    const allowedRoles = [
+      BoardMembership.Roles.EDITOR,
+      BoardMembership.Roles.WORKER,
+      BoardMembership.Roles.GUEST,
+    ];
+
+    if (!allowedRoles.includes(boardMembership.role)) {
       throw Errors.NOT_ENOUGH_RIGHTS;
     }
 
@@ -222,6 +228,20 @@ module.exports = {
       requestId: inputs.requestId,
       request: this.req,
     });
+
+    if (attachment.type === Attachment.Types.FILE && attachment.data && attachment.data.thumbnailUrls) {
+      await sails.helpers.cards.updateOne.with({
+        project,
+        board,
+        list,
+        record: card,
+        values: {
+          coverAttachment: attachment,
+        },
+        actorUser: currentUser,
+        request: this.req,
+      });
+    }
 
     return exits.success({
       item: sails.helpers.attachments.presentOne(attachment),

@@ -48,8 +48,13 @@ const Item = React.memo(({ id, index }) => {
   return (
     <Draggable draggableId={id} index={index} isDragDisabled={!board.isPersisted || !canEdit}>
       {({ innerRef, draggableProps, dragHandleProps }) => (
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        <div {...draggableProps} {...dragHandleProps} ref={innerRef} className={styles.wrapper}>
+        <div
+          {...draggableProps} // eslint-disable-line react/jsx-props-no-spreading
+          {...dragHandleProps} // eslint-disable-line react/jsx-props-no-spreading
+          ref={innerRef}
+          className={styles.wrapper}
+          data-board-id={id}
+        >
           <div className={classNames(styles.tab, isActive && styles.tabActive)}>
             {board.isPersisted ? (
               <>

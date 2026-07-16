@@ -346,6 +346,21 @@
   }
 }
 
+.dragging {
+  /* force css modules export */
+}
+
+:global(body) {
+  &[class*="dragging"] [data-rbd-draggable-id] {
+    pointer-events: none !important;
+  }
+
+  &[class*="dragging"] [data-board-id],
+  &[class*="dragging"] [data-board-id] * {
+    pointer-events: auto !important;
+  }
+}
+
 :global(#app) {
   &.dragging > * {
     pointer-events: none;

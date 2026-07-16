@@ -16,8 +16,21 @@
     <script>
       (function() {
         const container = document.getElementById('threejs-container-ANIMATION_1');
-        const devicePixelRatio = window.devicePixelRatio || 1;
-        
+        const bgType = localStorage.getItem('app-background-type') || 'network';
+        const bgImage = localStorage.getItem('app-background-image') || '';
+
+        if (bgType === 'image' && bgImage) {
+          container.style.backgroundImage = 'url(' + bgImage + ')';
+          container.style.backgroundSize = 'cover';
+          container.style.backgroundPosition = 'center';
+          container.style.backgroundRepeat = 'no-repeat';
+          return;
+        }
+
+        if (bgType === 'none') {
+          return;
+        }
+
         const width = container.clientWidth || window.innerWidth;
         const height = container.clientHeight || window.innerHeight;
 
@@ -27,57 +40,141 @@
 
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(width, height);
-        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setPixelRatio(window.devicePixelRatio || 1);
         container.appendChild(renderer.domElement);
 
-        const particlesCount = 100;
-        const positions = new Float32Array(particlesCount * 3);
-        const velocities = [];
+        let animateCallback = function() {};
+        
+        if (bgType === 'stars') {
+          // Stars Animation
+          const particlesCount = 200;
+          const geometry = new THREE.BufferGeometry();
+          const positions = new Float32Array(particlesCount * 3);
+          const speeds = [];
 
-        for (let i = 0; i < particlesCount; i++) {
+          for (let i = 0; i < particlesCount; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 150;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 150;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 150;
+            speeds.push((Math.random() + 0.1) * 0.05);
+          }
+
+          geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+          
+          const material = new THREE.PointsMaterial({
+            color: 0x8b5cf6,
+            size: 2,
+            transparent: true,
+            opacity: 0.8
+          });
+
+          const starPoints = new THREE.Points(geometry, material);
+          scene.add(starPoints);
+
+          animateCallback = function() {
+            const posAttr = geometry.getAttribute('position');
+            for (let i = 0; i < particlesCount; i++) {
+              let z = posAttr.getZ(i) + speeds[i];
+              if (z > 70) z = -70;
+              posAttr.setZ(i, z);
+            }
+            posAttr.needsUpdate = true;
+            starPoints.rotation.y += 0.0005;
+          };
+        } else if (bgType === 'waves') {
+          // 3D Waves Animation
+          const gridX = 40;
+          const gridY = 20;
+          const particlesCount = gridX * gridY;
+          const geometry = new THREE.BufferGeometry();
+          const positions = new Float32Array(particlesCount * 3);
+
+          let count = 0;
+          for (let ix = 0; ix < gridX; ix++) {
+            for (let iy = 0; iy < gridY; iy++) {
+              positions[count++] = ix * 4 - 80;
+              positions[count++] = 0;
+              positions[count++] = iy * 4 - 40;
+            }
+          }
+
+          geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+          const material = new THREE.PointsMaterial({
+            color: 0x00a2ff,
+            size: 1.5,
+            transparent: true,
+            opacity: 0.6
+          });
+
+          const wavePoints = new THREE.Points(geometry, material);
+          scene.add(wavePoints);
+
+          let waveCount = 0;
+          animateCallback = function() {
+            const posAttr = geometry.getAttribute('position');
+            let index = 0;
+            for (let ix = 0; ix < gridX; ix++) {
+              for (let iy = 0; iy < gridY; iy++) {
+                const y = Math.sin((ix + waveCount) * 0.3) * 3 + Math.sin((iy + waveCount) * 0.5) * 3;
+                posAttr.setY(index, y);
+                index++;
+              }
+            }
+            posAttr.needsUpdate = true;
+            waveCount += 0.05;
+            wavePoints.rotation.y = 0.1;
+          };
+        } else {
+          // Default Network Animation
+          const particlesCount = 100;
+          const positions = new Float32Array(particlesCount * 3);
+          const velocities = [];
+
+          for (let i = 0; i < particlesCount; i++) {
             positions[i * 3] = (Math.random() - 0.5) * 100;
             positions[i * 3 + 1] = (Math.random() - 0.5) * 100;
             positions[i * 3 + 2] = (Math.random() - 0.5) * 100;
             velocities.push(new THREE.Vector3(
-                (Math.random() - 0.5) * 0.05,
-                (Math.random() - 0.5) * 0.05,
-                (Math.random() - 0.5) * 0.05
+              (Math.random() - 0.5) * 0.05,
+              (Math.random() - 0.5) * 0.05,
+              (Math.random() - 0.5) * 0.05
             ));
-        }
+          }
 
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+          const geometry = new THREE.BufferGeometry();
+          geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-        const material = new THREE.LineBasicMaterial({ 
-            color: 0x4f46e5, 
+          const material = new THREE.LineBasicMaterial({ 
+            color: 0x8b5cf6, 
             transparent: true, 
             opacity: 0.3 
-        });
+          });
 
-        const lines = new THREE.LineSegments(geometry, material);
-        scene.add(lines);
+          const lines = new THREE.LineSegments(geometry, material);
+          scene.add(lines);
 
-        function updateConnections() {
+          animateCallback = function() {
             const posAttr = geometry.getAttribute('position');
             const newPositions = [];
             
             for (let i = 0; i < particlesCount; i++) {
-                const p1 = new THREE.Vector3(posAttr.getX(i), posAttr.getY(i), posAttr.getZ(i));
-                p1.add(velocities[i]);
-                
-                if (Math.abs(p1.x) > 50) velocities[i].x *= -1;
-                if (Math.abs(p1.y) > 50) velocities[i].y *= -1;
-                if (Math.abs(p1.z) > 50) velocities[i].z *= -1;
-                
-                posAttr.setXYZ(i, p1.x, p1.y, p1.z);
+              const p1 = new THREE.Vector3(posAttr.getX(i), posAttr.getY(i), posAttr.getZ(i));
+              p1.add(velocities[i]);
+              
+              if (Math.abs(p1.x) > 50) velocities[i].x *= -1;
+              if (Math.abs(p1.y) > 50) velocities[i].y *= -1;
+              if (Math.abs(p1.z) > 50) velocities[i].z *= -1;
+              
+              posAttr.setXYZ(i, p1.x, p1.y, p1.z);
 
-                for (let j = i + 1; j < particlesCount; j++) {
-                    const p2 = new THREE.Vector3(posAttr.getX(j), posAttr.getY(j), posAttr.getZ(j));
-                    const dist = p1.distanceTo(p2);
-                    if (dist < 20) {
-                        newPositions.push(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
-                    }
+              for (let j = i + 1; j < particlesCount; j++) {
+                const p2 = new THREE.Vector3(posAttr.getX(j), posAttr.getY(j), posAttr.getZ(j));
+                const dist = p1.distanceTo(p2);
+                if (dist < 20) {
+                  newPositions.push(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
                 }
+              }
             }
             
             const lineGeometry = new THREE.BufferGeometry();
@@ -85,25 +182,22 @@
             lines.geometry.dispose();
             lines.geometry = lineGeometry;
             posAttr.needsUpdate = true;
+            lines.rotation.y += 0.001;
+          };
         }
 
-        const light = new THREE.PointLight(0xffd700, 1, 100);
-        light.position.set(10, 10, 10);
-        scene.add(light);
-
         function animate() {
-            requestAnimationFrame(animate);
-            updateConnections();
-            lines.rotation.y += 0.001;
-            renderer.render(scene, camera);
+          requestAnimationFrame(animate);
+          animateCallback();
+          renderer.render(scene, camera);
         }
 
         window.addEventListener('resize', () => {
-            const w = container.clientWidth || window.innerWidth;
-            const h = container.clientHeight || window.innerHeight;
-            camera.aspect = w / h;
-            camera.updateProjectionMatrix();
-            renderer.setSize(w, h);
+          const w = container.clientWidth || window.innerWidth;
+          const h = container.clientHeight || window.innerHeight;
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          renderer.setSize(w, h);
         });
 
         animate();

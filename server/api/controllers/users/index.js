@@ -49,12 +49,49 @@ module.exports = {
 
   async fn() {
     const { currentUser } = this.req;
+    let users;
 
-    if (!sails.helpers.users.isAdminOrProjectOwner(currentUser)) {
-      throw Errors.NOT_ENOUGH_RIGHTS;
+    if (sails.helpers.users.isAdminOrProjectOwner(currentUser)) {
+      users = await User.qm.getAll();
+    } else {
+      // Find all projects the current user is manager of
+      const managedPms = await ProjectManager.find({ userId: currentUser.id });
+      const managedProjectIds = managedPms.map(pm => pm.projectId);
+
+      // Find all boards the current user is member of
+      const boardMemberships = await BoardMembership.find({ userId: currentUser.id });
+      const boardIds = boardMemberships.map(bm => bm.boardId);
+
+      let boardProjectIds = [];
+      if (boardIds.length > 0) {
+        const boards = await Board.find({ id: boardIds });
+        boardProjectIds = boards.map(b => b.projectId);
+      }
+
+      const accessibleProjectIds = _.uniq([...managedProjectIds, ...boardProjectIds]);
+
+      if (accessibleProjectIds.length === 0) {
+        users = await User.find({ id: currentUser.id });
+      } else {
+        // Find all managers of these projects
+        const pmUsers = await ProjectManager.find({ projectId: accessibleProjectIds });
+        const pmUserIds = pmUsers.map(pm => pm.userId);
+
+        // Find all boards in these projects
+        const projectBoards = await Board.find({ projectId: accessibleProjectIds });
+        const projectBoardIds = projectBoards.map(b => b.id);
+
+        // Find all members of these boards
+        let bmUserIds = [];
+        if (projectBoardIds.length > 0) {
+          const bmUsers = await BoardMembership.find({ boardId: projectBoardIds });
+          bmUserIds = bmUsers.map(bm => bm.userId);
+        }
+
+        const visibleUserIds = _.uniq([currentUser.id, ...pmUserIds, ...bmUserIds]);
+        users = await User.find({ id: visibleUserIds });
+      }
     }
-
-    const users = await User.qm.getAll();
 
     return {
       items: sails.helpers.users.presentMany(users, currentUser),

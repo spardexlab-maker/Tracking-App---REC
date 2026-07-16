@@ -26,12 +26,6 @@ const KanbanContent = React.memo(() => {
   const listIds = useSelector(selectors.selectKanbanListIdsForCurrentBoard);
 
   const canAddList = useSelector((state) => {
-    const isEditModeEnabled = selectors.selectIsEditModeEnabled(state); // TODO: move out?
-
-    if (!isEditModeEnabled) {
-      return isEditModeEnabled;
-    }
-
     const boardMembership = selectors.selectCurrentUserMembershipForCurrentBoard(state);
     return !!boardMembership && boardMembership.role === BoardMembershipRoles.EDITOR;
   });
@@ -42,15 +36,86 @@ const KanbanContent = React.memo(() => {
 
   const wrapperRef = useRef(null);
   const prevPositionRef = useRef(null);
+  const activeTabRef = useRef(null);
+  const handleMouseMoveRef = useRef(null);
 
-  const handleDragStart = useCallback(() => {
+  const handleDragStart = useCallback((initial) => {
     document.body.classList.add(globalStyles.dragging);
     closePopup();
+
+    if (initial) {
+      const { draggableId, type } = initial;
+      window.currentlyDraggedItem = {
+        id: parseDndId(draggableId),
+        type: type === DroppableTypes.LIST ? 'list' : 'card',
+      };
+      window.hoveredBoardId = null;
+
+      if (type === DroppableTypes.LIST) {
+        document.body.dataset.draggingType = 'list';
+      } else {
+        document.body.dataset.draggingType = 'card';
+      }
+
+      // Add coordinate-based mouse tracker to detect drop targets on board tabs
+      activeTabRef.current = null;
+      const handleMouseMove = (event) => {
+        const element = document.elementFromPoint(event.clientX, event.clientY);
+        const tabElement = element ? element.closest('[data-board-id]') : null;
+
+        if (tabElement) {
+          const boardId = tabElement.getAttribute('data-board-id');
+          if (window.hoveredBoardId !== boardId) {
+            if (activeTabRef.current) {
+              activeTabRef.current.classList.remove('board-tab-hovered');
+            }
+            window.hoveredBoardId = boardId;
+            tabElement.classList.add('board-tab-hovered');
+            activeTabRef.current = tabElement;
+          }
+        } else {
+          if (window.hoveredBoardId !== null) {
+            window.hoveredBoardId = null;
+            if (activeTabRef.current) {
+              activeTabRef.current.classList.remove('board-tab-hovered');
+              activeTabRef.current = null;
+            }
+          }
+        }
+      };
+
+      handleMouseMoveRef.current = handleMouseMove;
+      window.addEventListener('mousemove', handleMouseMove);
+    }
   }, []);
 
   const handleDragEnd = useCallback(
     ({ draggableId, type, source, destination }) => {
       document.body.classList.remove(globalStyles.dragging);
+      delete document.body.dataset.draggingType;
+
+      if (handleMouseMoveRef.current) {
+        window.removeEventListener('mousemove', handleMouseMoveRef.current);
+        handleMouseMoveRef.current = null;
+      }
+      if (activeTabRef.current) {
+        activeTabRef.current.classList.remove('board-tab-hovered');
+        activeTabRef.current = null;
+      }
+
+      const draggedId = window.currentlyDraggedItem ? window.currentlyDraggedItem.id : parseDndId(draggableId);
+      const draggedType = window.currentlyDraggedItem ? window.currentlyDraggedItem.type : (type === DroppableTypes.LIST ? 'list' : 'card');
+      const targetBoardId = window.hoveredBoardId;
+
+      window.currentlyDraggedItem = null;
+      window.hoveredBoardId = null;
+
+      if (targetBoardId) {
+        if (draggedType === 'list') {
+          dispatch(entryActions.transferList(draggedId, targetBoardId));
+        }
+        return;
+      }
 
       if (!destination) {
         return;

@@ -16,7 +16,7 @@ import { UserRoles } from '../../../constants/Enums';
 
 import styles from './UserActionsStep.module.scss';
 
-const UserActionsStep = React.memo(({ onClose }) => {
+const UserActionsStep = React.memo(({ onClose, onBackgroundSettingsOpen }) => {
   const isLogouting = useSelector(selectors.selectIsLogouting);
 
   const customerPanelUrl = useSelector(
@@ -40,10 +40,12 @@ const UserActionsStep = React.memo(({ onClose }) => {
     onClose();
   }, [onClose, dispatch]);
 
-  const handleAboutClick = useCallback(() => {
-    dispatch(entryActions.openAboutModal());
+
+
+  const handleBackgroundSettingsClick = useCallback(() => {
+    onBackgroundSettingsOpen();
     onClose();
-  }, [onClose, dispatch]);
+  }, [onClose, onBackgroundSettingsOpen]);
 
   const handleLogoutClick = useCallback(() => {
     dispatch(entryActions.logout());
@@ -75,6 +77,10 @@ const UserActionsStep = React.memo(({ onClose }) => {
               context: 'title',
             })}
           </Menu.Item>
+          <Menu.Item className={styles.menuItem} onClick={handleBackgroundSettingsClick}>
+            <Icon name="theme" className={styles.menuItemIcon} />
+            {t('common.backgroundSettings') || 'تخصيص الخلفية'}
+          </Menu.Item>
           {withAdministration && (
             <>
               <Menu.Item className={styles.menuItem} onClick={handleAdministrationClick}>
@@ -98,12 +104,7 @@ const UserActionsStep = React.memo(({ onClose }) => {
               )}
             </>
           )}
-          <Menu.Item className={styles.menuItem} onClick={handleAboutClick}>
-            <Icon name="info circle" className={styles.menuItemIcon} />
-            {t('common.aboutApp', {
-              context: 'title',
-            })}
-          </Menu.Item>
+
           <hr className={styles.divider} />
           <Menu.Item
             {...logoutMenuItemProps} // eslint-disable-line react/jsx-props-no-spreading
@@ -123,6 +124,7 @@ const UserActionsStep = React.memo(({ onClose }) => {
 
 UserActionsStep.propTypes = {
   onClose: PropTypes.func.isRequired,
+  onBackgroundSettingsOpen: PropTypes.func.isRequired,
 };
 
 export default UserActionsStep;
