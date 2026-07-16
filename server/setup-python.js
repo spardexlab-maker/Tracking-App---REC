@@ -4,6 +4,12 @@ const path = require('path');
 const VENV_PATH = path.join(__dirname, '.venv');
 const REQUIREMENTS_PATH = path.join(__dirname, 'requirements.txt');
 
+if (process.env.VERCEL) {
+  console.log('Running on VERCEL, skipping Python venv creation.');
+  process.exit(0);
+}
+
+
 const PYTHON_PATH =
   process.platform === 'win32'
     ? path.join(VENV_PATH, 'Scripts', 'python.exe')
