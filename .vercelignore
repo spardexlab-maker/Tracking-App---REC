@@ -1,0 +1,10 @@
+server/.venv
+node_modules
+client/node_modules
+server/node_modules
+.venv
+.vercel
+client/dist
+public
+.git
+.husky
