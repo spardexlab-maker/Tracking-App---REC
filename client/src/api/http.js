@@ -18,7 +18,7 @@ const http = {};
         return result;
       }, new FormData());
 
-    return fetch(`${Config.BASE_PATH}/api${url}`, {
+    return fetch(`${Config.BACKEND_URL || Config.BASE_PATH}/api${url}`, {
       method,
       headers,
       body: formData,

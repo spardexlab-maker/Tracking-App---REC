@@ -10,7 +10,10 @@ import Config from '../constants/Config';
 
 const io = sailsIOClient(socketIOClient);
 
-io.sails.path = `${Config.BASE_PATH}/socket.io`;
+if (Config.BACKEND_URL) {
+  io.sails.url = Config.BACKEND_URL;
+}
+io.sails.path = `${Config.BACKEND_URL || Config.BASE_PATH}/socket.io`;
 io.sails.autoConnect = false;
 io.sails.reconnection = true;
 io.sails.useCORSRouteToGetCookie = false;
